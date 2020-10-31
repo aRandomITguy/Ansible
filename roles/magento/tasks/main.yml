@@ -1,0 +1,83 @@
+- name: Download Magento Zip from github
+  get_url:
+    url: https://github.com/magento/magento2/archive/{{Magento_Version}}.zip
+    dest: /usr/share/nginx/html/magento.zip
+    mode: '7777'
+
+- name: Extract magento
+  unarchive:
+    src: /usr/share/nginx/html/magento.zip
+    dest: /usr/share/nginx/html
+    remote_src: True
+
+- name: Delete magento zip
+  file:
+    path: /usr/share/nginx/html/magento.zip
+    state: absent
+
+- name: Download Magento Sample Zip from github
+  get_url:
+    url: https://github.com/magento/magento2-sample-data/archive/{{Magento_Version}}.zip
+    dest: /usr/share/nginx/html/magento-sample.zip
+    mode: '7777'
+
+- name: Extract Magento Sample
+  unarchive:
+    src: /usr/share/nginx/html/magento-sample.zip
+    dest: /usr/share/nginx/html
+    remote_src: True
+
+- name: Delete sample zip
+  file:
+    path: /usr/share/nginx/html/magento-sample.zip
+    state: absent
+
+- name: Create sym link
+  command: php -f /usr/share/nginx/html/magento2-sample-data-2.4.1/dev/tools/build-sample-data.php -- --ce-source="/usr/share/nginx/html/magento2-2.4.1"
+
+- name: Run composer update
+  command: php /usr/local/bin/composer.phar update
+  args:
+    chdir: /usr/share/nginx/html/magento2-2.4.1
+
+- name: Copy virtual host file to conf.d
+  template:
+    src: magento.conf
+    dest: /etc/nginx/conf.d/magento.conf
+
+- name: Install Magento
+  command:
+    ./magento setup:install \
+    --base-url="{{ magento_domain }}" \
+    --db-host="{{ magento_db_host }}" \
+    --db-name="{{ magento_db_name }}" \
+    --db-user="{{ magento_db_user }}" \
+    --db-password="{{ magento_db_password }}" \
+    --admin-firstname="{{ magento_admin_first }}" \
+    --admin-lastname="{{ magento_admin_last }}" \
+    --admin-email="{{ magento_admin_email }}" \
+    --admin-user="{{ magento_admin_user }}" \
+    --admin-password="{{ magento_admin_pass }}" \
+    --language="{{ magento_language }}" \
+    --currency="{{ magento_currency }}" \
+    --timezone="{{ magento_timezone }}" \
+    --use-rewrites="{{ magento_rewrite }}" \
+  args:
+    chdir: /usr/share/nginx/html/magento2-2.4.1/
+
+- name: Install crontab
+  command: ./bin/magento cron:install
+  args:
+    chdir: /usr/share/nginx/html/magento2-2.4.1/
+
+- name: Set owner and group to nginx
+  command: chown -R nginx:nginx /usr/share/nginx/html/magento2-2.4.1
+
+- name: Set permissions for nginx
+  command: chmod -R 755 /usr/share/nginx/html/magento2-2.4.1
+
+- name: Set owner and group to nginx for sample
+  command: chown -R nginx:nginx /usr/share/nginx/html/magento2-sample-data-2.4.1
+
+- name: Set permissions for nginx for sample
+  command: chmod -R 755 /usr/share/nginx/html/magento2-sample-data-2.4.1

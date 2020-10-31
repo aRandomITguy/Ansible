@@ -1,0 +1,5 @@
+- name: stop 
+  service: name=elasticsearch.service state=stopped
+
+- name: start 
+  service: name=elasticsearch.service state=started

@@ -1,0 +1,33 @@
+- name: Import a key from a url
+  rpm_key:
+    state: present
+    key: https://rpms.remirepo.net/RPM-GPG-KEY-remi2018
+
+- name: Download Elastic Search
+  yum:
+    name: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{Elastic_Version}}-x86_64.rpm
+    state: present
+
+- name: Elastic Search Start initial
+  service:
+    name: elasticsearch.service
+    state: started
+    enabled: yes
+
+- name: Change cluster name
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^cluster.name ='
+    line: cluster.name = Magento Cluster
+
+- name: Change node name
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^node.name ='
+    line: node.name = Magento Node
+
+- name: Change network host
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^network.host ='
+    line: network.host = localhost

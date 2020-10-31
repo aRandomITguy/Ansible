@@ -1,0 +1,40 @@
+#Magento recommends to use swap memory if you have only 2 GB ram.
+#Swapfile name
+swap_file: /swapfile
+
+#Swapfile space
+swap_space: 2G
+
+#Time zone of your linux machine.
+time_zone: America/Sao_Paulo
+
+#your domain. Use your loopback ip if you don't have a domain
+domain: example.com.br
+www_domain: www.example.com.br
+
+#Version of php. The recommended version for the magento when this ansible playbook was created is 7.4
+php_version: 7.4
+
+#Elastic search version
+Elastic_Version: 7.9.3
+
+#Magento Version
+Magento_Version: 2.4.1
+
+#These variables are used both in mysql to create the database and in the magento setup:install
+magento_db_name: magentodb
+magento_db_user: magentouser@localhost
+magento_db_password: S@m3Rand0mpPass
+
+#Variables used in magento setup:install
+magento_domain: http://example.com.br
+magento_db_host: localhost
+magento_admin_first: administrator
+magento_admin_last: administrator
+magento_admin_email: administrator@administrator.com
+magento_admin_user: administrator
+magento_admin_pass: administrator123
+magento_language: pt_BR
+magento_currency: BRL
+magento_timezone: America/Sao_Paulo
+magento_rewrite: 1

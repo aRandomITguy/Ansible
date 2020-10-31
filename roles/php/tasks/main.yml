@@ -1,0 +1,63 @@
+- name: reset php module
+  command: yum module reset php -y
+
+- name: enable php module
+  command: yum module enable php:remi-7.4 -y
+
+- name: Install php
+  command: yum module install php:remi-{{ php_version }} -y
+
+- name: Install php deps
+  command: yum install php php-fpm php-cli php-mysqlnd php-opcache php-xml php-gd php-soap php-bcmath php-intl php-mbstring php-json php-iconv php-fpm php-zip unzip git -y
+
+- name: php Start initial
+  service:
+    name: php-fpm
+    state: started
+    enabled: yes
+
+- name: Change Mem limit from php.ini
+  lineinfile:
+    path: /etc/php.ini
+    regexp: '^memory_limit ='
+    line: memory_limit = 1024M
+
+- name: Change max file size
+  lineinfile:
+    path: /etc/php.ini
+    regexp: '^upload_max_filesize ='
+    line: upload_max_filesize = 200M
+
+- name: Activate zlib compression
+  lineinfile:
+    path: /etc/php.ini
+    regexp: '^zlib.output_compression ='
+    line: zlib.output_compression = On
+
+- name: Change max execution time
+  lineinfile:
+    path: /etc/php.ini
+    regexp: '^max_execution_time ='
+    line: max_execution_time = 300
+
+- name: Change Real path cache size
+  lineinfile:
+    path: /etc/php.ini
+    regexp: '^realpath_cache_size ='
+    line: realpath_cache_size = 10M
+
+- name: Change Real path cache ttl
+  lineinfile:
+    path: /etc/php.ini
+    regexp: '^realpath_cache_ttl ='
+    line: realpath_cache_ttl = 7200
+
+- name: Copy magento.conf to php-fpm.d
+  template:
+    src: magento.conf
+    dest: /etc/php-fpm.d/magento.conf
+
+- name: Restart php-fpm to create the socket
+  service:
+    name: php-fpm
+    state: restarted

@@ -1,0 +1,87 @@
+- name: Rum yum update
+  yum: 
+    name: '*' 
+    state: latest
+
+- name: Install wget
+  yum: 
+    name: wget  
+    state: present
+
+- name: Install java 1.8.0
+  yum: 
+    name: java-1.8.0-openjdk  
+    state: present
+
+- name: import remi GPG key 
+  rpm_key: 
+    state: present
+    key: https://rpms.remirepo.net/RPM-GPG-KEY-remi2018
+
+- name: Add repository
+  yum:
+    name: https://rpms.remirepo.net/enterprise/remi-release-8.rpm
+    state: present
+    
+- name: Install python3
+  yum:
+    name: python3
+    state: present
+
+- name: Install python3-pip
+  yum:
+    name: python3-pip
+
+- name: pip3 install 
+  command: pip3 install pymysql
+
+- name: Allow SE linux
+  command: semanage permissive -a httpd_t
+
+- name: set swap_file variable
+  set_fact:
+    swap_file: "{{swap_file}}.swap"
+
+- name: check if swap file exists
+  stat:
+    path: "{{ swap_file }}"
+  register: swap_file_check
+
+- name: create swap file
+  command: fallocate -l {{swap_space}} {{swap_file}}
+  when: not swap_file_check.stat.exists
+
+- name: Create swap space
+  command: dd if=/dev/zero of=/extraswap bs=1M count=512
+  when: not swap_file_check.stat.exists
+
+- name: set permissions on swap file
+  file:
+    path: "{{ swap_file }}"
+    mode: 0600
+
+- name: format swap file
+  command: mkswap {{ swap_file }}
+  when: not swap_file_check.stat.exists
+
+- name: add to fstab
+  lineinfile:
+    dest: /etc/fstab
+    regexp: "{{ swap_file }}"
+    line: "{{ swap_file }} swap swap defaults 0 0"
+
+- name: turn on swap
+  command: swapon -a
+
+- name: set swapiness
+  sysctl:
+    name: vm.swappiness
+    value: "40"
+
+- name: change timezone to {{time_zone}}
+  command: timedatectl set-timezone {{time_zone}}
+
+- name: Install vim
+  yum: 
+    name: vim  
+    state: latest

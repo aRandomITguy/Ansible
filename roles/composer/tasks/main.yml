@@ -1,0 +1,16 @@
+- name: Download composer installer
+  get_url:
+    url: https://getcomposer.org/installer
+    dest: /tmp/composer-setup.php
+    mode: 0755
+
+- name: Install composer using PHP
+  shell: php composer-setup.php --version=1.10.16
+  args:
+    chdir: /tmp/
+
+- name: Move composer file to /user/local/bin
+  shell: mv composer.phar /usr/local/bin/composer.phar
+  args:
+    chdir: /tmp/
+

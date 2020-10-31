@@ -1,0 +1,22 @@
+# Ansible playbook to install magento on your centOS08 server.
+# The magento installed is provided by Magento GitHUB. The porpose of this installation is for labs only.
+# If you need to install for production i would recomend to user one of the other methods of installation provided by Magento documentation
+# Change hosts.yml to your server IP
+# Make sure you change to your private-key used on AWS to connect to your EC2
+# Run with: ansible-playbook -i hosts.yml ansible-magento2.yml -k -vvv --private-key ~/.ssh/id_rsa --become
+# Created by Cezar Navoscone Roman cezar.nroman@hotmail.com
+
+#This playbook is a bare bones installation. Do not forget to enforce security good practices on your server.
+
+- name: Install Nginx, Mysql server, php, Elastic Search, composer, magento and sll certificate.
+  hosts: magento
+  user: centos
+
+  roles:
+    - common
+    - nginx
+    - php
+    - mysql
+    - ElasticSearch
+    - composer
+    - magento
