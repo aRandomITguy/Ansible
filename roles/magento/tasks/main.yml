@@ -63,7 +63,7 @@
     --timezone="{{ magento_timezone }}" \
     --use-rewrites="{{ magento_rewrite }}" \
   args:
-    chdir: /usr/share/nginx/html/magento2-2.4.1/
+    chdir: /usr/share/nginx/html/magento2-2.4.1/bin
 
 - name: Install crontab
   command: ./bin/magento cron:install
