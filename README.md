@@ -1,8 +1,11 @@
 # Ansible-Magento 2
 
 This is an ansible playbook to install Magento 2 in a CentOS 8 amazon EC2.
+
 It is installing a Github version of Magento. This version serves the purpose of labing and testing.
+
 If you need to install a production version you may want to change this playbook a bit for that purpose.
+
 It uses Nginx as a web server.
 
 ### Magento Documentation for installation
