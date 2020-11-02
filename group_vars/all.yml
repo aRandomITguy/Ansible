@@ -1,3 +1,5 @@
+#Make sure to edit to serve your case.
+
 #Magento recommends to use swap memory if you have only 2 GB ram.
 #Swapfile name
 swap_file: /swapfile
@@ -10,6 +12,8 @@ time_zone: America/Sao_Paulo
 
 #your domain. Use your loopback ip if you don't have a domain
 domain: example.com.br
+#I recommend to delete the www variable here and in the Ansible-Magento2/roles/magento/templates/magento.conf if you don't have a domain.
+#Or you can always test by editing your local machine dns.
 www_domain: www.example.com.br
 
 #Version of php. The recommended version for the magento when this ansible playbook was created is 7.4
