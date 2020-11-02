@@ -5,7 +5,7 @@ It is installing a Github version of Magento. This version serves the purpose of
 If you need to install a production version you may want to change this playbook a bit for that purpose.
 It uses Nginx as a web server.
 
-### Magento Documentation
+### Magento Documentation for installation
 https://devdocs.magento.com/guides/v2.4/install-gde/bk-install-guide.html
 
 ### Attention
